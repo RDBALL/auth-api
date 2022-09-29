@@ -8,7 +8,17 @@ const userSchema = require('./users');
 
 const DATABASE_URL = process.env.DATABASE_URL || 'sqlite::memory';
 
-const sequelize = new Sequelize(DATABASE_URL);
+const DATABASE_CONFIG = process.env.NODE_ENV === 'production'
+  ? {
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+  } : {};
+
+const sequelize = new Sequelize(DATABASE_URL, DATABASE_CONFIG);
 const food = foodModel(sequelize, DataTypes);
 const clothes = clothesModel(sequelize, DataTypes);
 
